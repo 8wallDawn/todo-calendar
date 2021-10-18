@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>todo</title>
+
+  <!-- google fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway&display=swap" rel="stylesheet">
+  <!-- google material icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <!-- css 초기화 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reset-css@5.0.1/reset.min.css">
+  <!-- index.css -->
+  <link rel="stylesheet" href="./index.css">
+
+  <!-- main.js -->
+  <script defer src="./main.js"></script>
+</head>
+
+<body>
+  <!-- HEADER -->
+  <header>
+    <div class="inner">
+
+      <div class="account">
+        <div class="accountImg">img</div>
+        <div class="accountInfo">
+          <div class="accountInfo__name">8wallDawn</div>
+          <div class="accountInfo__email">dankthedust@gmail.com</div>
+        </div>
+      </div>
+
+      <div class="daily">
+        <div class="daily__title">DAILY</div>
+        <div class="daily__ratebox">
+          <div class="daily__rate">
+            <span class="daily__ratetitle complete">COMPLETE</span>
+            <ul class="complete__list">
+              <li>1</li>
+              <li>2</li>
+              <li>3</li>
+            </ul>
+          </div>
+          <div class="daily__rate">
+            <span class="daily__ratetitle unfinished">UNFINISHED</span>
+            <ul class="unfinished__list">
+              <li>1</li>
+              <li>2</li>
+              <li>3</li>
+              <li>4</li>
+              <li>5</li>
+            </ul>
+          </div>
+          <div class="daily__rate">
+            <span class="daily__ratetitle incomplete">INCOMPLETE</span>
+            <ul class="incomplete__list">
+              <li>1</li>
+              <li>2</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu">
+        <span class="material-icons">menu</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- CALENDAR -->
+  <div class="calendar" id="calendar">
+    <div class="inner">
+      <div class="calendar__months">
+        <div class="other-month prev">
+          <span class="prev-month">SEP</span>
+          <span class="current-year">2021</span>
+        </div>
+        <div class="current-month">OCT
+          <span class="current-year">2021</span>
+        </div>
+        <div class="other-month next">
+          <span class="next-month">NOV</span>
+          <span class="current-year">2021</span></div>
+      </div>
+      <div class="calendar-days">
+        <li>SUN</li>
+        <li>MON</li>
+        <li>TUE</li>
+        <li>WED</li>
+        <li>THU</li>
+        <li>FRI</li>
+        <li>SAT</li>
+      </div>
+      <ul class="calendar-dates">
+        <!-- <li><div class="date">26</div></li>
+        <li><div class="date">27</div></li>
+        <li class="events-date"><div class="date">28</div></li>
+        <li><div class="date">29</div></li>
+        <li><div class="date">30</div></li>
+        <li><div class="date">1</div></li>
+        <li class="active-date"><div class="date">2</div></li> -->
+        <li class="another-month" data-day="undefined" data-month="8" data-year="2021">26</li>
+        <li class="another-month" data-day="undefined" data-month="8" data-year="2021">23</li>
+        <li class="another-month" data-day="undefined" data-month="8" data-year="2021">25</li>
+        <li class="another-month" data-day="undefined" data-month="8" data-year="2021">25</li>
+        <li class="another-month" data-day="undefined" data-month="8" data-year="2021">25</li>
+        
+      </ul>
+    </div>
+  </div>
+</body>
+
+</html>
