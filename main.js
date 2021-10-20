@@ -1,14 +1,17 @@
 const $calendarDates = document.querySelector('.calendar-dates');
+const $calendarMonthAndYear = document.querySelector('.calendar-month-year');
 
 // ========================================================
 //1. 현재 날짜를 받는다.
 let calendar = new Date();
 const MaxDates = 42;
 
-function getTime(time) {
+function getTime() {
+    let time = new Date(calendar);
+
     return {
         active: {
-            dates: getlastDateTHisMonth(time), // #1
+            dates: getlastDateThisMonth(time), // #1
             startDay: getDayOfFirstDateThisMonth(time), // #2
             date: time.getDate(), // 출력할 날의 날짜
             day: time.getDay(), // 출력할 날의 요일
@@ -24,10 +27,10 @@ function getTime(time) {
 console.log(getTime(calendar));
 
 // #1 매개변수 달의 마지막 날을 읽음.
-function getlastDateTHisMonth(time) {
+function getlastDateThisMonth(time) {
     return new Date(time.getFullYear(),time.getMonth()+1,0).getDate();
 }
-// getlastDateTHisMonth(calendar);
+// getlastDateThisMonth(calendar);
 
 // #2  매개변수 달의 첫 날의 요일 idx
 function getDayOfFirstDateThisMonth(time) {
@@ -66,10 +69,10 @@ function range(number) {
 }
 // console.log(range(getTime(calendar).active.startDay));
 
-function drawDays(time) {
+function drawDates(time) {
     let datesInPrevMonth = range(getTime(time).active.startDay).map((date,idx)=>{
         return {
-            dateNumber: getlastDateTHisMonth(getTime(time).prevMonth)-idx,
+            dateNumber: getlastDateThisMonth(getTime(time).prevMonth)-idx,
             month: new Date(getTime(time).prevMonth).getMonth(),
             year: new Date(getTime(time).prevMonth).getFullYear(),
             currentMonth: false
@@ -106,15 +109,88 @@ function drawDays(time) {
     let dates = [...datesInPrevMonth, ...datesInActiveMonth, ...datesInNextMonth];
 
     let datesTemplate = "";
-    dates.forEach(day => {
-        datesTemplate += `<li class="${day.currentMonth ? '' : 'another-month'}${day.today ? ' active-date ' : ''}${day.selected ? 'selected-date' : ''}${day.hasEvent ? ' event-date' : ''}" data-day="${day.dateNumber}" data-month="${day.month}" data-year="${day.year}"><div class="date">${day.dateNumber}</div></li>`
+    dates.forEach(date => {
+        datesTemplate += `<li class="${date.currentMonth ? '' : 'another-month'}${date.today ? ' active-date ' : ''}${date.selected ? 'selected-date' : ''}${date.hasEvent ? ' event-date' : ''}" data-day="${date.dateNumber}" data-month="${date.month}" data-year="${date.year}"><div class="date">${date.dateNumber}</div></li>`
     });
-    console.log(datesTemplate);
+    // console.log(datesTemplate);
 
     $calendarDates.innerHTML = datesTemplate;
 }
-console.log(drawDays(calendar));
-
+// console.log(drawDays(calendar));
 
 // ========================================================
-//3. 이전달 또는 다음달 버튼을 누르면 calendar 변수의 date() 값을 교체한다.
+//3. 현재달과 다음달, 이전달과 그 달의 연도를 함께 출력
+function drawMonthAndYear (time) {
+    const AVAIALBLE_MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+
+    let months = [getTime(time).prevMonth, time,getTime(time).nextMonth];
+
+    let monthsInfo = months.map((month, idx)=> {
+        return {
+            monthNumber : month.getMonth(),
+            monthString : AVAIALBLE_MONTHS[month.getMonth()],
+            year : month.getFullYear(),
+            prev : idx===0,
+            active: idx ===1,
+            next: idx===2
+        }
+    });
+    // console.log(monthsInfo);
+    let monthYearTemplate ="";
+
+    monthsInfo.forEach((month, idx) => {
+        monthYearTemplate += `<div class="${month.active ? 'active-month' : 'other-month'} ${month.prev ? 'prev' : ''} ${month.next ? 'next' : ''}"><span class="month">${month.monthString}</span><span class="year">${month.year}</span></div>`
+    });
+    // console.log(monthYearTemplate);
+
+    $calendarMonthAndYear.innerHTML = monthYearTemplate;
+}
+
+// ========================================================
+//4. 이전달 또는 다음달 버튼을 누르면 calendar 변수의 date() 값을 교체한다.
+
+function updateTime(time) {
+    calendar = new Date(time);
+}
+
+function monthTrigger(){
+    $prevMonth = document.querySelector('.prev');
+    $nextMonth = document.querySelector('.next');
+
+    $prevMonth.addEventListener('click', function(){
+        updateTime(getTime().prevMonth);
+        drawAll(calendar);
+        monthTrigger() // 해당 함수를 재 선언 하는 이유는 다음과 같다.
+        // drawMonthAndYear() 에서 현재 우리가 사용하는 변수 $prevMonth, $nextMonth에 저장되는 클래스 prev와 next가 innerHTML에 의해 재생성 되기 때문에 addEventListener 가 재할당되지 않아 일회성 이벤트리스터로 될 수 있기 때문이다.
+        console.log('prev');
+    })
+
+    $nextMonth.addEventListener('click', e=> {
+        updateTime(getTime().nextMonth);
+        drawAll(calendar);
+        monthTrigger()
+        console.log('next')
+    });
+
+    console.log('monthTrigger');
+}
+// document.querySelector('.prev').addEventListener('click', () => {
+//     updateTime(getTime().prevMonth);
+//     drawAll(calendar);
+//     console.log('prev');
+// })
+
+// ========================================================
+//5. 한번에 출력
+
+function drawAll(time) {
+    drawMonthAndYear(time),
+    drawDates(time)
+};
+
+function init() {
+    drawAll(calendar);
+    monthTrigger();
+}
+
+init();

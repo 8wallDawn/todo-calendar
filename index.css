@@ -155,7 +155,7 @@ header .menu .material-icons {
   margin-top: 355px;
 }
 /* MONTHS */
-.calendar .inner .calendar__months {
+.calendar .inner .calendar-month-year {
   position: fixed;
   z-index: var(--z-fixed);
   background-color: var(--bg-color);
@@ -167,8 +167,9 @@ header .menu .material-icons {
   border-bottom: 2px solid var(--black-color);
   font-size: var(--h2-font-size);
 }
-.calendar .calendar__months .other-month{
+.calendar .calendar-month-year .other-month{
   color: var(--gray-color);
+  cursor: pointer;
 }
 /* calendar-days */
 .calendar .inner .calendar-days {
@@ -196,6 +197,9 @@ header .menu .material-icons {
   width: 181px;
   margin-right: 43px;
   border-top: 2px solid var(--black-color);
+}
+.calendar .inner .calendar-dates > li.another-month {
+  border-top: 2px solid var(--gray-color);
 }
 
 .calendar .inner .calendar-dates > li .date {
