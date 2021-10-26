@@ -17,6 +17,7 @@ function getTime() {
             day: time.getDay(), // 출력할 날의 요일
             month: time.getMonth(), // 출력할 날의 달
             year: time.getFullYear(), // 출력할 날의 연도
+            timeFormat: todoDateKey(time)
         },
         prevMonth: getPrevDate(time),
         // prevMonthYear: getPrevDate(time).getFullYear(),
@@ -75,7 +76,8 @@ function drawDates(time) {
             dateNumber: getlastDateThisMonth(getTime(time).prevMonth)-idx,
             month: new Date(getTime(time).prevMonth).getMonth(),
             year: new Date(getTime(time).prevMonth).getFullYear(),
-            currentMonth: false
+            currentMonth: false,
+            // milltime: +new Date(new Date(getTime(time).prevMonth).getFullYear(),  new Date(getTime(time).prevMonth).getMonth(), getlastDateThisMonth(getTime(time).prevMonth)-idx)
         }
     }).reverse();
     // console.log(datesInPrevMonth); //현재 달에 출력 되어야할 이전달의 날들을 담음.
@@ -89,7 +91,8 @@ function drawDates(time) {
             month: getTime(time).active.month,
             year: getTime(time).active.year,
             selected: getTime(time).active.date === dateNumber,
-            currentMonth: true
+            currentMonth: true,
+            // milltime: +new Date(getTime(time).active.year, getTime(time).active.month, dateNumber)
         }
     });
     // console.log(datesInActiveMonth); //출력 되어야할 현재 달의 날들을 담음.
@@ -101,7 +104,8 @@ function drawDates(time) {
             dateNumber: idx + 1,
             month: new Date(getTime(time).nextMonth).getMonth(),
             year: new Date(getTime(time).nextMonth).getFullYear(),
-            currentMonth: false
+            currentMonth: false,
+            // milltime: +new Date(new Date(getTime(time).nextMonth).getFullYear(), new Date(getTime(time).nextMonth).getMonth(), idx+1)
         }
     });
     // console.log(datesInNextMonth); // 현재 달에 출력될 다음 달의 날들을 담음.
@@ -110,7 +114,8 @@ function drawDates(time) {
 
     let datesTemplate = "";
     dates.forEach(date => {
-        datesTemplate += `<li class="${date.currentMonth ? '' : 'another-month'}${date.today ? ' active-date ' : ''}${date.selected ? 'selected-date' : ''}${date.hasEvent ? ' event-date' : ''}" data-day="${date.dateNumber}" data-month="${date.month}" data-year="${date.year}"><div class="date">${date.dateNumber}</div></li>`
+        datesTemplate += `<li class="${date.currentMonth ? '' : 'another-month'}${date.today ? ' active-date ' : ''}${date.selected ? 'selected-date' : ''}${date.hasEvent ? ' event-date' : ''}"data-day="${date.dateNumber}" data-month="${date.month}" data-year="${date.year}"><div class="date"  data-day="${date.dateNumber}">${date.dateNumber}</div><div class="todo"><ul class="toDoList"></ul></div></li>`
+        // <div class="todo"><ul class="toDoList-${date.milltime}"></ul></div>
     });
     // console.log(datesTemplate);
 
@@ -162,17 +167,17 @@ function monthTrigger(){
         drawAll(calendar);
         monthTrigger() // 해당 함수를 재 선언 하는 이유는 다음과 같다.
         // drawMonthAndYear() 에서 현재 우리가 사용하는 변수 $prevMonth, $nextMonth에 저장되는 클래스 prev와 next가 innerHTML에 의해 재생성 되기 때문에 addEventListener 가 재할당되지 않아 일회성 이벤트리스터로 될 수 있기 때문이다.
-        console.log('prev');
+        // console.log('prev');
     })
 
     $nextMonth.addEventListener('click', e=> {
         updateTime(getTime().nextMonth);
         drawAll(calendar);
         monthTrigger()
-        console.log('next')
+        // console.log('next')
     });
 
-    console.log('monthTrigger');
+    // console.log('monthTrigger');
 }
 // document.querySelector('.prev').addEventListener('click', () => {
 //     updateTime(getTime().prevMonth);
@@ -181,16 +186,109 @@ function monthTrigger(){
 // })
 
 // ========================================================
+// 5. 날짜 선택 시 최신화
+function dateTrigger(){
+    $dates = document.querySelector('.calendar-dates');
+    
+    $dates.addEventListener('click', e => {
+        let element = e.path[1];
+        // getStrDateByEl 에서 $dates 즉, 날짜들이 출력되는 영역에 날짜값이 아닌 element들이 있는데 해당 element는 date값이 없는 불필요 영역으로 값을 불러올 필요가 없다. 이때문에 return false를 통한 실행 중지가 있다.
+        getStrDateByEl(element);
+        updateTime(strDate);
+        // console.log(strDate);
+        drawAll(calendar);
+
+        monthTrigger();
+    })
+    
+    // console.log('dateTrigger');
+}
+// ========================================================
+function getStrDateByEl(El) {
+    let date = El.getAttribute('data-day');
+    let month = El.getAttribute('data-month');
+    let year = El.getAttribute('data-year');
+    if (!date) return false; // 매개변수 Element의 date값이 없는 경우, 실행중단.
+    return strDate = `${Number(month) + 1}/${date}/${year}`;
+}
+
+// ========================================================
+//6. todolist
+function todoDateKey (time) {
+    return `${time.getMonth()+1}/${time.getDate()}/${time.getFullYear()}` // 달/일/연도
+}
+// console.log(todoDateKey(calendar))
+const localStorageName='calendar-todos'
+let TODOLIST = JSON.parse(localStorage.getItem(localStorageName)) || {};
+
+function addToDoTrigger() {
+    const $addToDoBtn = document.querySelector('.insert-todo__field__btn');
+    const $todoField = document.querySelector('.insert-todo__field');
+
+
+    
+    $addToDoBtn.addEventListener('click', e => {
+        let $selectedDates = document.querySelector('.selected-date');
+        // console.log($selectedDates);   
+
+        let toDoValue = $todoField.value;
+        // console.log(toDoValue);
+        
+        getStrDateByEl($selectedDates);
+        let toDoKey = todoDateKey(new Date(strDate))
+        // console.log(toDoKey);
+
+        // let $todoList = document.querySelector(`.toDoList-${+new Date(strDate)}`);
+        // console.log($todoList);
+
+        if(!TODOLIST[toDoKey]) TODOLIST[toDoKey] = [];
+
+        console.log(TODOLIST)
+        TODOLIST[toDoKey].push(toDoValue);
+
+        localStorage.setItem(localStorageName, JSON.stringify(TODOLIST));
+        $todoField.value = '';
+
+        drawAll(calendar);
+        monthTrigger();
+    });
+    
+}
+
+function drawToDos () {
+    const $completeList = document.querySelector('.complete__list');
+    const $incompleteList = document.querySelector('.incomplete__list');
+
+    // const $completeBtn = document.createElement('button');
+    // $completeBtn.innerText = 'check';
+
+    const today = getTime(calendar);
+
+    let todayToDoList = TODOLIST[today.active.timeFormat] || [];
+    // console.log(todayToDoList)
+    let todayToDoTemplate = '';
+    todayToDoList.forEach(todo => {
+        todayToDoTemplate += `<li>${todo}</li>`;
+    });
+
+    $incompleteList.innerHTML = todayToDoTemplate;
+}
+
+
+// ========================================================
 //5. 한번에 출력
 
 function drawAll(time) {
     drawMonthAndYear(time),
     drawDates(time)
+    drawToDos();
 };
 
 function init() {
     drawAll(calendar);
     monthTrigger();
+    dateTrigger();
+    addToDoTrigger();
 }
 
 init();

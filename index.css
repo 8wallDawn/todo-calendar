@@ -149,6 +149,50 @@ header .menu .material-icons {
   font-size: 30px;
 }
 
+/* INPUT TODOS */
+header .todo-insert-container {
+  position: absolute;
+  bottom: 30px;
+  right: 0;
+}
+header .todo-insert-container .insert-todo__field {
+  border:0;
+  border-bottom:1px solid var(--gray-color);
+  width: 538px;
+  padding:8px 0 5px 0;
+  font-size: var(--h3-font-size);
+  color: var(--gray-color);
+  transition: all 0.5s ease-in-out;
+}
+header .todo-insert-container .insert-todo__field:focus{
+  border:none;	
+  outline:none;
+  border-bottom:1px solid var(--red-color);
+}
+header .todo-insert-container .insert-todo__label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: var(--h2-font-size);
+  transition: all 0.5s ease-in-out;
+  pointer-events: none;
+}
+.todo-insert-container input:focus ~ label,
+.todo-insert-container input:valid ~ label{
+	top:-12px;
+	font-size:var(--h3-font-size);
+}
+header .todo-insert-container .insert-todo__field__btn {
+  position: absolute;
+  right: 0;
+  transition: all 0.5s ease-in-out;
+  color: var(--gray-color);
+  cursor: pointer;
+}
+.todo-insert-container input:focus ~ .insert-todo__field__btn {
+  color: var(--red-color);
+}
+
 /* CALENDAR */
 .calendar {
   width: 100%;
@@ -206,7 +250,9 @@ header .menu .material-icons {
   font-size: 35px;
   color: var(--black-color);
   padding-top: 35px;
-  padding: 35px 0 ;
+  margin-bottom:35px;
+  position: relative;
+  cursor: pointer;
 }
 
 .calendar .inner .calendar-dates li.another-month .date{
@@ -214,4 +260,30 @@ header .menu .material-icons {
 }
 .calendar .inner .calendar-dates > li.active-date .date {
   color: var(--black-color);
+}
+/* -- */
+.calendar .inner .calendar-dates > li .date:after {
+  content: attr(data-day);
+  font-size: 35px;
+  color: var(--black-color);
+  position: absolute;
+  width: 181px;
+  height: 0px;
+  padding-top: 35px;
+  top: 0;
+  left: 0;
+  transition: all .5s;
+}
+.calendar .inner .calendar-dates > li.another-month .date::after{
+  color: var(--gray-color);
+}
+
+/* selected-dates effects  */
+.calendar .inner .calendar-dates > li .date:hover:after,
+.calendar .inner .calendar-dates > li.selected-date :after{
+  height: 35px;
+  width: 181px;
+  background-color: var(--black-color);
+  left: 0;
+  color: white;
 }
