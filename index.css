@@ -135,6 +135,9 @@ header > .inner {
 .daily .daily__ratebox .daily__rate{
   line-height: 24px;
 }
+.daily .daily__ratebox .daily__rate .daily-list li > .material-icons {
+  cursor: pointer;
+}
 
 /* HAMBURGER MENU */
 header .menu {

@@ -77,7 +77,7 @@ function drawDates(time) {
             month: new Date(getTime(time).prevMonth).getMonth(),
             year: new Date(getTime(time).prevMonth).getFullYear(),
             currentMonth: false,
-            // milltime: +new Date(new Date(getTime(time).prevMonth).getFullYear(),  new Date(getTime(time).prevMonth).getMonth(), getlastDateThisMonth(getTime(time).prevMonth)-idx)
+            milltime: todoDateKey(new Date(new Date(getTime(time).prevMonth).getFullYear(),  new Date(getTime(time).prevMonth).getMonth(), getlastDateThisMonth(getTime(time).prevMonth)-idx))
         }
     }).reverse();
     // console.log(datesInPrevMonth); //현재 달에 출력 되어야할 이전달의 날들을 담음.
@@ -92,7 +92,7 @@ function drawDates(time) {
             year: getTime(time).active.year,
             selected: getTime(time).active.date === dateNumber,
             currentMonth: true,
-            // milltime: +new Date(getTime(time).active.year, getTime(time).active.month, dateNumber)
+            milltime: todoDateKey(new Date(getTime(time).active.year, getTime(time).active.month, dateNumber))
         }
     });
     // console.log(datesInActiveMonth); //출력 되어야할 현재 달의 날들을 담음.
@@ -105,7 +105,7 @@ function drawDates(time) {
             month: new Date(getTime(time).nextMonth).getMonth(),
             year: new Date(getTime(time).nextMonth).getFullYear(),
             currentMonth: false,
-            // milltime: +new Date(new Date(getTime(time).nextMonth).getFullYear(), new Date(getTime(time).nextMonth).getMonth(), idx+1)
+            milltime: todoDateKey(new Date(new Date(getTime(time).nextMonth).getFullYear(), new Date(getTime(time).nextMonth).getMonth(), idx+1))
         }
     });
     // console.log(datesInNextMonth); // 현재 달에 출력될 다음 달의 날들을 담음.
@@ -114,7 +114,7 @@ function drawDates(time) {
 
     let datesTemplate = "";
     dates.forEach(date => {
-        datesTemplate += `<li class="${date.currentMonth ? '' : 'another-month'}${date.today ? ' active-date ' : ''}${date.selected ? 'selected-date' : ''}${date.hasEvent ? ' event-date' : ''}"data-day="${date.dateNumber}" data-month="${date.month}" data-year="${date.year}"><div class="date"  data-day="${date.dateNumber}">${date.dateNumber}</div><div class="todo"><ul class="toDoList"></ul></div></li>`
+        datesTemplate += `<li class="${date.currentMonth ? '' : 'another-month'}${date.today ? ' active-date ' : ''}${date.selected ? 'selected-date' : ''}${date.hasEvent ? ' event-date' : ''}"data-day="${date.dateNumber}" data-month="${date.month}" data-year="${date.year}"><div class="date"  data-day="${date.dateNumber}">${date.dateNumber}</div><div class="todo"><ul class="toDoList-${date.milltime}"></ul></div></li>`
         // <div class="todo"><ul class="toDoList-${date.milltime}"></ul></div>
     });
     // console.log(datesTemplate);
@@ -215,7 +215,7 @@ function getStrDateByEl(El) {
 // ========================================================
 //6. todolist
 function todoDateKey (time) {
-    return `${time.getMonth()+1}/${time.getDate()}/${time.getFullYear()}` // 달/일/연도
+    return `${time.getMonth()+1}-${time.getDate()}-${time.getFullYear()}` // 달/일/연도
 }
 // console.log(todoDateKey(calendar))
 const localStorageName='calendar-todos'
@@ -267,13 +267,30 @@ function drawToDos () {
     let todayToDoList = TODOLIST[today.active.timeFormat] || [];
     // console.log(todayToDoList)
     let todayToDoTemplate = '';
+    let perDayToDoTemplate = '';
     todayToDoList.forEach(todo => {
-        todayToDoTemplate += `<li>${todo}</li>`;
+        todayToDoTemplate += `<li><span class="material-icons">done</span>${todo}</li>`;
+        perDayToDoTemplate += `<li>${todo}</li>`;
     });
 
     $incompleteList.innerHTML = todayToDoTemplate;
-}
 
+    drawToDosInCalendar();
+}
+function drawToDosInCalendar() {
+    const $toDoList = document.querySelector(`.toDoList-${getTime(calendar).active.timeFormat}`)
+    console.log($toDoList);
+
+    const today = getTime(calendar);
+
+    let todayToDoList = TODOLIST[today.active.timeFormat] || [];
+    let perDayToDoTemplate = '';
+    todayToDoList.forEach(todo => {
+        perDayToDoTemplate += `<li>${todo}</li>`;
+    });
+
+    $toDoList.innerHTML = perDayToDoTemplate;
+}
 
 // ========================================================
 //5. 한번에 출력
