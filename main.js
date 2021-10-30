@@ -224,6 +224,7 @@ function dateTrigger(){
         drawAll(calendar);
 
         monthTrigger();
+        completeToDo(calendar);
     })
     
     // console.log('dateTrigger');
@@ -243,8 +244,8 @@ function todoDateKey (time) {
     return `${time.getMonth()+1}-${time.getDate()}-${time.getFullYear()}` // 달/일/연도
 }
 // console.log(todoDateKey(calendar))
-const localStorageName='calendar-todos'
-let TODOLIST = JSON.parse(localStorage.getItem(localStorageName)) || {};
+const incompleteToDosStorageName='incomplete-todos'
+let TODOLIST = JSON.parse(localStorage.getItem(incompleteToDosStorageName)) || {};
 
 function addToDoTrigger() {
     const $addToDoBtn = document.querySelector('.insert-todo__field__btn');
@@ -269,11 +270,12 @@ function addToDoTrigger() {
         // console.log(TODOLIST)
         if(toDoValue) TODOLIST[toDoKey].push(toDoValue);
 
-        localStorage.setItem(localStorageName, JSON.stringify(TODOLIST));
+        localStorage.setItem(incompleteToDosStorageName, JSON.stringify(TODOLIST));
         $todoField.value = '';
 
         drawAll(calendar);
         monthTrigger();
+        completeToDo();
     });
     
 }
@@ -291,7 +293,7 @@ function drawToDos () {
     // console.log(todayToDoList)
     let todayToDoTemplate = '';
     todayToDoList.forEach(todo => {
-        todayToDoTemplate += `<li><span class="material-icons">done</span>${todo}</li>`;
+        todayToDoTemplate += `<li><span class="material-icons completeBtn">done</span>${todo}</li>`;
     });
 
     $incompleteList.innerHTML = todayToDoTemplate;
@@ -314,12 +316,47 @@ function drawToDos () {
 // }
 
 // ========================================================
+//6. 완료 버튼 누를시에 complete 리스트에 출력하고 storage에 추가
+const completeToDosStorageName='complete-todos'
+let COMPLETELIST = JSON.parse(localStorage.getItem(completeToDosStorageName)) || {};
+
+function completeToDo () {
+    const $completeBtn = document.querySelectorAll('.completeBtn');
+    // console.log(todoDateKey(calendar));
+    // console.log($completeBtn);
+
+    $completeBtn.forEach((btn,idx) => {
+        btn.addEventListener('click', e => {
+            // console.log('good-work', idx);
+            // console.log(TODOLIST[todoDateKey(calendar)])
+            let key = todoDateKey(calendar);
+            let todoList = TODOLIST[todoDateKey(calendar)]
+            // console.log(TODOLIST[todoDateKey(calendar)][idx])
+
+            let changeToDolist = todoList.filter(todo => 
+                todo !== TODOLIST[todoDateKey(calendar)][idx]
+            )
+            // console.log(changeToDolist);
+            
+            console.log(changeToDolist)
+            if(changeToDolist==[]) {delete TODOLIST.key}
+            else {TODOLIST[todoDateKey(calendar)]=changeToDolist;}
+            localStorage.setItem(incompleteToDosStorageName, JSON.stringify(TODOLIST));
+            
+            drawAll(calendar)
+        })
+    })
+}
+
+
+// ========================================================
 //5. 한번에 출력
 
 function drawAll(time) {
     drawMonthAndYear(time),
     drawDates(time)
     drawToDos();
+    completeToDo();
 };
 
 function init() {
@@ -327,6 +364,7 @@ function init() {
     monthTrigger();
     dateTrigger();
     addToDoTrigger();
+    
 }
 
 init();
