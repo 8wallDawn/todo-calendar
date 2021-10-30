@@ -77,7 +77,7 @@ function drawDates(time) {
             month: new Date(getTime(time).prevMonth).getMonth(),
             year: new Date(getTime(time).prevMonth).getFullYear(),
             currentMonth: false,
-            milltime: todoDateKey(new Date(new Date(getTime(time).prevMonth).getFullYear(),  new Date(getTime(time).prevMonth).getMonth(), getlastDateThisMonth(getTime(time).prevMonth)-idx))
+            dateTemp: todoDateKey(new Date(new Date(getTime(time).prevMonth).getFullYear(),  new Date(getTime(time).prevMonth).getMonth(), getlastDateThisMonth(getTime(time).prevMonth)-idx))
         }
     }).reverse();
     // console.log(datesInPrevMonth); //현재 달에 출력 되어야할 이전달의 날들을 담음.
@@ -92,7 +92,7 @@ function drawDates(time) {
             year: getTime(time).active.year,
             selected: getTime(time).active.date === dateNumber,
             currentMonth: true,
-            milltime: todoDateKey(new Date(getTime(time).active.year, getTime(time).active.month, dateNumber))
+            dateTemp: todoDateKey(new Date(getTime(time).active.year, getTime(time).active.month, dateNumber))
         }
     });
     // console.log(datesInActiveMonth); //출력 되어야할 현재 달의 날들을 담음.
@@ -105,7 +105,7 @@ function drawDates(time) {
             month: new Date(getTime(time).nextMonth).getMonth(),
             year: new Date(getTime(time).nextMonth).getFullYear(),
             currentMonth: false,
-            milltime: todoDateKey(new Date(new Date(getTime(time).nextMonth).getFullYear(), new Date(getTime(time).nextMonth).getMonth(), idx+1))
+            dateTemp: todoDateKey(new Date(new Date(getTime(time).nextMonth).getFullYear(), new Date(getTime(time).nextMonth).getMonth(), idx+1))
         }
     });
     // console.log(datesInNextMonth); // 현재 달에 출력될 다음 달의 날들을 담음.
@@ -113,13 +113,38 @@ function drawDates(time) {
     let dates = [...datesInPrevMonth, ...datesInActiveMonth, ...datesInNextMonth];
 
     let datesTemplate = "";
-    dates.forEach(date => {
-        datesTemplate += `<li class="${date.currentMonth ? '' : 'another-month'}${date.today ? ' active-date ' : ''}${date.selected ? 'selected-date' : ''}${date.hasEvent ? ' event-date' : ''}"data-day="${date.dateNumber}" data-month="${date.month}" data-year="${date.year}"><div class="date"  data-day="${date.dateNumber}">${date.dateNumber}</div><div class="todo"><ul class="toDoList-${date.milltime}"></ul></div></li>`
-        // <div class="todo"><ul class="toDoList-${date.milltime}"></ul></div>
-    });
-    // console.log(datesTemplate);
+    // dates.forEach(date => {
+    //     datesTemplate += `<li class="${date.currentMonth ? '' : 'another-month'}${date.today ? ' active-date ' : ''}${date.selected ? 'selected-date' : ''}${date.hasEvent ? ' event-date' : ''}"data-day="${date.dateNumber}" data-month="${date.month}" data-year="${date.year}"><div class="date"  data-day="${date.dateNumber}">${date.dateNumber}</div><div class="todo"><ul class="toDoList-${date.dateTemp}"></ul></div></li>`
+    //     // <div class="todo"><ul class="toDoList-${date.dateTemp}"></ul></div>
+    // });
+    // // console.log(datesTemplate);
 
+    // $calendarDates.innerHTML = datesTemplate;
+
+    // ===================================================
+    dates.forEach(date => {
+        // console.log('dateTemp',date.dateTemp)
+        // console.log('TODOLIST-KEY',Object.keys(TODOLIST))
+        // console.log(TODOLIST['10-27-2021'])
+        // let dailyTodos = TODOLIST[date.dateTemp];
+        // console.log(typeof dailyTodos); // object
+        // console.log(TODOLIST);
+        let todoTemp = '';
+        
+        if(TODOLIST.hasOwnProperty(date.dateTemp)){
+            TODOLIST[date.dateTemp].map(dailyTodo => {
+                todoTemp += `<li>${dailyTodo}</li>`
+            });
+            // console.log(todoTemp);
+
+            datesTemplate += `<li class="${date.currentMonth ? '' : 'another-month'}${date.today ? ' active-date ' : ''}${date.selected ? 'selected-date' : ''}${date.hasEvent ? ' event-date' : ''}"data-day="${date.dateNumber}" data-month="${date.month}" data-year="${date.year}"><div class="date"  data-day="${date.dateNumber}">${date.dateNumber}</div><div class="todo"><ul class="toDoList-${date.dateTemp}"><li>${todoTemp}</li></ul></div></li>`
+        } else {
+            datesTemplate += `<li class="${date.currentMonth ? '' : 'another-month'}${date.today ? ' active-date ' : ''}${date.selected ? 'selected-date' : ''}${date.hasEvent ? ' event-date' : ''}"data-day="${date.dateNumber}" data-month="${date.month}" data-year="${date.year}"><div class="date"  data-day="${date.dateNumber}">${date.dateNumber}</div><div class="todo"><ul class="toDoList-${date.dateTemp}"></ul></div></li>`
+        }
+    })
     $calendarDates.innerHTML = datesTemplate;
+    
+    // ===================================================
 }
 // console.log(drawDays(calendar));
 
@@ -224,13 +249,11 @@ let TODOLIST = JSON.parse(localStorage.getItem(localStorageName)) || {};
 function addToDoTrigger() {
     const $addToDoBtn = document.querySelector('.insert-todo__field__btn');
     const $todoField = document.querySelector('.insert-todo__field');
-
-
     
     $addToDoBtn.addEventListener('click', e => {
         let $selectedDates = document.querySelector('.selected-date');
         // console.log($selectedDates);   
-
+        
         let toDoValue = $todoField.value;
         // console.log(toDoValue);
         
@@ -243,8 +266,8 @@ function addToDoTrigger() {
 
         if(!TODOLIST[toDoKey]) TODOLIST[toDoKey] = [];
 
-        console.log(TODOLIST)
-        TODOLIST[toDoKey].push(toDoValue);
+        // console.log(TODOLIST)
+        if(toDoValue) TODOLIST[toDoKey].push(toDoValue);
 
         localStorage.setItem(localStorageName, JSON.stringify(TODOLIST));
         $todoField.value = '';
@@ -267,30 +290,28 @@ function drawToDos () {
     let todayToDoList = TODOLIST[today.active.timeFormat] || [];
     // console.log(todayToDoList)
     let todayToDoTemplate = '';
-    let perDayToDoTemplate = '';
     todayToDoList.forEach(todo => {
         todayToDoTemplate += `<li><span class="material-icons">done</span>${todo}</li>`;
-        perDayToDoTemplate += `<li>${todo}</li>`;
     });
 
     $incompleteList.innerHTML = todayToDoTemplate;
 
-    drawToDosInCalendar();
+    // drawToDosInCalendar();
 }
-function drawToDosInCalendar() {
-    const $toDoList = document.querySelector(`.toDoList-${getTime(calendar).active.timeFormat}`)
-    console.log($toDoList);
+// function drawToDosInCalendar() {
+//     const $toDoList = document.querySelector(`.toDoList-${getTime(calendar).active.timeFormat}`)
+//     console.log($toDoList);
 
-    const today = getTime(calendar);
+//     const today = getTime(calendar);
 
-    let todayToDoList = TODOLIST[today.active.timeFormat] || [];
-    let perDayToDoTemplate = '';
-    todayToDoList.forEach(todo => {
-        perDayToDoTemplate += `<li>${todo}</li>`;
-    });
+//     let todayToDoList = TODOLIST[today.active.timeFormat] || [];
+//     let perDayToDoTemplate = '';
+//     todayToDoList.forEach(todo => {
+//         perDayToDoTemplate += `<li>${todo}</li>`;
+//     });
 
-    $toDoList.innerHTML = perDayToDoTemplate;
-}
+//     $toDoList.innerHTML = perDayToDoTemplate;
+// }
 
 // ========================================================
 //5. 한번에 출력
