@@ -342,6 +342,7 @@ function completeToDo () {
             localStorage.setItem(incompleteToDosStorageName, JSON.stringify(TODOLIST));
             
             drawAll(calendar);
+            monthTrigger();
         })
     })
 }
