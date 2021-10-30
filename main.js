@@ -275,7 +275,6 @@ function addToDoTrigger() {
 
         drawAll(calendar);
         monthTrigger();
-        completeToDo();
     });
     
 }
@@ -324,26 +323,25 @@ function completeToDo () {
     const $completeBtn = document.querySelectorAll('.completeBtn');
     // console.log(todoDateKey(calendar));
     // console.log($completeBtn);
+    console.log('실행!')
 
     $completeBtn.forEach((btn,idx) => {
         btn.addEventListener('click', e => {
+            console.log(idx)
             // console.log('good-work', idx);
             // console.log(TODOLIST[todoDateKey(calendar)])
-            let key = todoDateKey(calendar);
             let todoList = TODOLIST[todoDateKey(calendar)]
             // console.log(TODOLIST[todoDateKey(calendar)][idx])
 
             let changeToDolist = todoList.filter(todo => 
                 todo !== TODOLIST[todoDateKey(calendar)][idx]
             )
-            // console.log(changeToDolist);
+            console.log(changeToDolist);
             
-            console.log(changeToDolist)
-            if(changeToDolist==[]) {delete TODOLIST.key}
-            else {TODOLIST[todoDateKey(calendar)]=changeToDolist;}
+            TODOLIST[todoDateKey(calendar)]=changeToDolist;
             localStorage.setItem(incompleteToDosStorageName, JSON.stringify(TODOLIST));
             
-            drawAll(calendar)
+            drawAll(calendar);
         })
     })
 }
@@ -363,8 +361,7 @@ function init() {
     drawAll(calendar);
     monthTrigger();
     dateTrigger();
-    addToDoTrigger();
-    
+    addToDoTrigger()
 }
 
 init();
