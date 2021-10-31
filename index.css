@@ -231,9 +231,11 @@ header .todo-insert-container .insert-todo__field__btn {
 .calendar .inner .calendar-days > li {
   width: 224px;
   font-weight: var(--font-semi-bold);
+  padding-bottom: 20px;
 }
 .calendar .inner .calendar-days > li:first-child { color: var(--red-color);}
 .calendar .inner .calendar-days > li:last-child { color: var(--blue-color);}
+
 /* calendar-dates */
 .calendar .inner .calendar-dates {
   padding-top: 236px;
@@ -250,7 +252,7 @@ header .todo-insert-container .insert-todo__field__btn {
 }
 
 .calendar .inner .calendar-dates > li .date {
-  font-size: 35px;
+  font-size: 30px;
   color: var(--black-color);
   padding-top: 35px;
   margin-bottom:35px;
@@ -267,7 +269,7 @@ header .todo-insert-container .insert-todo__field__btn {
 /* -- */
 .calendar .inner .calendar-dates > li .date:after {
   content: attr(data-day);
-  font-size: 35px;
+  font-size: 30px;
   color: var(--black-color);
   position: absolute;
   width: 181px;

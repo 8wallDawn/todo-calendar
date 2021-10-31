@@ -191,7 +191,7 @@ function monthTrigger(){
         updateTime(getTime().prevMonth);
         drawAll(calendar);
         monthTrigger() // 해당 함수를 재 선언 하는 이유는 다음과 같다.
-        // drawMonthAndYear() 에서 현재 우리가 사용하는 변수 $prevMonth, $nextMonth에 저장되는 클래스 prev와 next가 innerHTML에 의해 재생성 되기 때문에 addEventListener 가 재할당되지 않아 일회성 이벤트리스터로 될 수 있기 때문이다.
+        // drawMonthAndYear() 에서 현재 우리가 사용하는 변수 $prevMonth, $nextMonth에 저장되는 클래스 prev와 next가 innerHTML에 의해 재생성 되기 때문에 addEventListener 가 재할당되지 않아 일회성 이벤트리스너로 될 수 있기 때문이다.
         // console.log('prev');
     })
 
@@ -283,39 +283,28 @@ function drawToDos () {
     const $completeList = document.querySelector('.complete__list');
     const $incompleteList = document.querySelector('.incomplete__list');
 
-    // const $completeBtn = document.createElement('button');
-    // $completeBtn.innerText = 'check';
-
     const today = getTime(calendar);
 
     let todayToDoList = TODOLIST[today.active.timeFormat] || [];
+    let todayCompleteList = COMPLETELIST[today.active.timeFormat] || [];
     // console.log(todayToDoList)
+    // console.log(todayCompleteList)
     let todayToDoTemplate = '';
+    let todayCompleteTemplate = '';
     todayToDoList.forEach(todo => {
         todayToDoTemplate += `<li><span class="material-icons completeBtn">done</span>${todo}</li>`;
     });
+    todayCompleteList.forEach(completeTodo => {
+        todayCompleteTemplate += `<li>${completeTodo}</li>`;
+    });
 
     $incompleteList.innerHTML = todayToDoTemplate;
+    $completeList.innerHTML = todayCompleteTemplate;
 
-    // drawToDosInCalendar();
 }
-// function drawToDosInCalendar() {
-//     const $toDoList = document.querySelector(`.toDoList-${getTime(calendar).active.timeFormat}`)
-//     console.log($toDoList);
-
-//     const today = getTime(calendar);
-
-//     let todayToDoList = TODOLIST[today.active.timeFormat] || [];
-//     let perDayToDoTemplate = '';
-//     todayToDoList.forEach(todo => {
-//         perDayToDoTemplate += `<li>${todo}</li>`;
-//     });
-
-//     $toDoList.innerHTML = perDayToDoTemplate;
-// }
 
 // ========================================================
-//6. 완료 버튼 누를시에 complete 리스트에 출력하고 storage에 추가
+//6. 완료 버튼 누를시에 complete 리스트에 출력하고 storage에 추가와 complete 리스트에 추가
 const completeToDosStorageName='complete-todos'
 let COMPLETELIST = JSON.parse(localStorage.getItem(completeToDosStorageName)) || {};
 
@@ -323,23 +312,29 @@ function completeToDo () {
     const $completeBtn = document.querySelectorAll('.completeBtn');
     // console.log(todoDateKey(calendar));
     // console.log($completeBtn);
-    console.log('실행!')
+    // console.log('실행!')
 
     $completeBtn.forEach((btn,idx) => {
         btn.addEventListener('click', e => {
-            console.log(idx)
+            // console.log(idx)
             // console.log('good-work', idx);
             // console.log(TODOLIST[todoDateKey(calendar)])
             let todoList = TODOLIST[todoDateKey(calendar)]
             // console.log(TODOLIST[todoDateKey(calendar)][idx])
+            let completeTodo = TODOLIST[todoDateKey(calendar)][idx];
 
             let changeToDolist = todoList.filter(todo => 
                 todo !== TODOLIST[todoDateKey(calendar)][idx]
             )
-            console.log(changeToDolist);
+            // console.log(changeToDolist);
             
             TODOLIST[todoDateKey(calendar)]=changeToDolist;
             localStorage.setItem(incompleteToDosStorageName, JSON.stringify(TODOLIST));
+            
+            if(!COMPLETELIST[todoDateKey(calendar)]) COMPLETELIST[todoDateKey(calendar)] = [];
+            COMPLETELIST[todoDateKey(calendar)].push(completeTodo);
+            // console.log(COMPLETELIST);
+            localStorage.setItem(completeToDosStorageName, JSON.stringify(COMPLETELIST));
             
             drawAll(calendar);
             monthTrigger();
