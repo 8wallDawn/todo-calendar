@@ -271,7 +271,6 @@ function addToDoTrigger() {
         drawAll(calendar);
         monthTrigger();
     });
-
 }
 
 function drawToDos() {
@@ -285,10 +284,10 @@ function drawToDos() {
     // console.log(todayToDoList)
     // console.log(todayCompleteList)
     let todayToDoTemplate = '';
-    let todayCompleteTemplate = '';
     todayToDoList.forEach(todo => {
         todayToDoTemplate += `<li><span class="material-icons completeBtn">done</span>${todo}<span class="material-icons cancelBtn">clear</span></li>`;
     });
+    let todayCompleteTemplate = '';
     todayCompleteList.forEach(completeTodo => {
         todayCompleteTemplate += `<li>${completeTodo}</li>`;
     });
