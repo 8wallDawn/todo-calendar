@@ -58,7 +58,7 @@
 body {
   font-size: 16;
   font-family: var(--body-font);
-  height: 3656px;
+  /* height: 3656px; */
 }
 
 .inner {

@@ -20,22 +20,20 @@ function getTime() {
             timeFormat: todoDateKey(time)
         },
         prevMonth: getPrevDate(time),
-        // prevMonthYear: getPrevDate(time).getFullYear(),
         nextMonth: getNextDate(time),
-        // nextMonthYear: getNextDate(time).getFullYear()
     }
 }
 console.log(getTime(calendar));
 
 // #1 매개변수 달의 마지막 날을 읽음.
 function getlastDateThisMonth(time) {
-    return new Date(time.getFullYear(),time.getMonth()+1,0).getDate();
+    return new Date(time.getFullYear(), time.getMonth() + 1, 0).getDate();
 }
 // getlastDateThisMonth(calendar);
 
 // #2  매개변수 달의 첫 날의 요일 idx
 function getDayOfFirstDateThisMonth(time) {
-    return new Date(time.getFullYear(),time.getMonth(),1).getDay();
+    return new Date(time.getFullYear(), time.getMonth(), 1).getDay();
 }
 // getDayOfFirstDateThisMonth(calendar);
 
@@ -45,17 +43,20 @@ function getDayOfFirstDateThisMonth(time) {
 // getPrevYear(new Date(2021,3,1)); 2021 2 1
 // getNextYear(new Date(2021,11,1)); 2022 1 1
 // getNextYear(new Date(2021,9,1)); 2021 10 1
-function getPrevDate(time){
-    if (time.getMonth() == 0) {
-        return new Date(time.getFullYear()-1,11,1);
-    }
-    else return new Date(time.getFullYear(),time.getMonth()-1,1);
+function getPrevDate(time) {
+    // if (time.getMonth() == 0) {
+    //     return new Date(time.getFullYear()-1,11,1);
+    // }
+    // else 
+    return new Date(time.getFullYear(), time.getMonth() - 1, 1);
 }
+
 function getNextDate(time) {
-    if (time.getMonth()==11) {
-        return new Date(time.getFullYear()+1,0,1);
-    }
-    else return new Date(time.getFullYear(),time.getMonth()+1,1);
+    // if (time.getMonth()==11) {
+    //     return new Date(time.getFullYear()+1,0,1);
+    // }
+    // else 
+    return new Date(time.getFullYear(), time.getMonth() + 1, 1);
 }
 
 
@@ -68,19 +69,19 @@ function getNextDate(time) {
 function range(number) {
     return new Array(number).fill().map((e, idx) => idx);
 }
-// console.log(range(getTime(calendar).active.startDay));
+console.log(range(getTime(calendar).active.startDay));
 
 function drawDates(time) {
-    let datesInPrevMonth = range(getTime(time).active.startDay).map((date,idx)=>{
+    let datesInPrevMonth = range(getTime(time).active.startDay).map((date, idx) => {
         return {
-            dateNumber: getlastDateThisMonth(getTime(time).prevMonth)-idx,
+            dateNumber: getlastDateThisMonth(getTime(time).prevMonth) - idx,
             month: new Date(getTime(time).prevMonth).getMonth(),
             year: new Date(getTime(time).prevMonth).getFullYear(),
             currentMonth: false,
-            dateTemp: todoDateKey(new Date(new Date(getTime(time).prevMonth).getFullYear(),  new Date(getTime(time).prevMonth).getMonth(), getlastDateThisMonth(getTime(time).prevMonth)-idx))
+            dateTemp: todoDateKey(new Date(new Date(getTime(time).prevMonth).getFullYear(), new Date(getTime(time).prevMonth).getMonth(), getlastDateThisMonth(getTime(time).prevMonth) - idx))
         }
     }).reverse();
-    // console.log(datesInPrevMonth); //현재 달에 출력 되어야할 이전달의 날들을 담음.
+    console.log(datesInPrevMonth); //현재 달에 출력 되어야할 이전달의 날들을 담음.
 
     let datesInActiveMonth = range(getTime(time).active.dates).map((date, idx) => {
         let dateNumber = idx + 1;
@@ -105,7 +106,7 @@ function drawDates(time) {
             month: new Date(getTime(time).nextMonth).getMonth(),
             year: new Date(getTime(time).nextMonth).getFullYear(),
             currentMonth: false,
-            dateTemp: todoDateKey(new Date(new Date(getTime(time).nextMonth).getFullYear(), new Date(getTime(time).nextMonth).getMonth(), idx+1))
+            dateTemp: todoDateKey(new Date(new Date(getTime(time).nextMonth).getFullYear(), new Date(getTime(time).nextMonth).getMonth(), idx + 1))
         }
     });
     // console.log(datesInNextMonth); // 현재 달에 출력될 다음 달의 날들을 담음.
@@ -130,46 +131,46 @@ function drawDates(time) {
         // console.log(typeof dailyTodos); // object
         // console.log(TODOLIST);
         let todoTemp = '';
-        
-        if(TODOLIST.hasOwnProperty(date.dateTemp)){
+
+        if (TODOLIST.hasOwnProperty(date.dateTemp)) {
             TODOLIST[date.dateTemp].map(dailyTodo => {
                 todoTemp += `<li>${dailyTodo}</li>`
             });
             // console.log(todoTemp);
 
-            datesTemplate += `<li class="${date.currentMonth ? '' : 'another-month'}${date.today ? ' active-date ' : ''}${date.selected ? 'selected-date' : ''}${date.hasEvent ? ' event-date' : ''}"data-day="${date.dateNumber}" data-month="${date.month}" data-year="${date.year}"><div class="date"  data-day="${date.dateNumber}">${date.dateNumber}</div><div class="todo"><ul class="toDoList-${date.dateTemp}"><li>${todoTemp}</li></ul></div></li>`
+            datesTemplate += `<li class="${date.currentMonth ? '' : 'another-month'}${date.today ? ' active-date ' : ''}${date.selected ? 'selected-date' : ''}"data-day="${date.dateNumber}" data-month="${date.month}" data-year="${date.year}"><div class="date"  data-day="${date.dateNumber}">${date.dateNumber}</div><div class="todo"><ul class="toDoList-${date.dateTemp}"><li>${todoTemp}</li></ul></div></li>`
         } else {
-            datesTemplate += `<li class="${date.currentMonth ? '' : 'another-month'}${date.today ? ' active-date ' : ''}${date.selected ? 'selected-date' : ''}${date.hasEvent ? ' event-date' : ''}"data-day="${date.dateNumber}" data-month="${date.month}" data-year="${date.year}"><div class="date"  data-day="${date.dateNumber}">${date.dateNumber}</div><div class="todo"><ul class="toDoList-${date.dateTemp}"></ul></div></li>`
+            datesTemplate += `<li class="${date.currentMonth ? '' : 'another-month'}${date.today ? ' active-date ' : ''}${date.selected ? 'selected-date' : ''}"data-day="${date.dateNumber}" data-month="${date.month}" data-year="${date.year}"><div class="date"  data-day="${date.dateNumber}">${date.dateNumber}</div><div class="todo"><ul class="toDoList-${date.dateTemp}"></ul></div></li>`
         }
     })
     $calendarDates.innerHTML = datesTemplate;
-    
+
     // ===================================================
 }
 // console.log(drawDays(calendar));
 
 // ========================================================
 //3. 현재달과 다음달, 이전달과 그 달의 연도를 함께 출력
-function drawMonthAndYear (time) {
-    const AVAIALBLE_MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+function drawMonthAndYear(time) {
+    const AVAIALBLE_MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 
-    let months = [getTime(time).prevMonth, time,getTime(time).nextMonth];
+    let months = [getTime(time).prevMonth, time, getTime(time).nextMonth];
 
-    let monthsInfo = months.map((month, idx)=> {
+    let monthsInfo = months.map((month, idx) => {
         return {
-            monthNumber : month.getMonth(),
-            monthString : AVAIALBLE_MONTHS[month.getMonth()],
-            year : month.getFullYear(),
-            prev : idx===0,
-            active: idx ===1,
-            next: idx===2
+            monthNumber: month.getMonth(),
+            monthString: AVAIALBLE_MONTHS[month.getMonth()],
+            year: month.getFullYear(),
+            prev: idx === 0,
+            active: idx === 1,
+            next: idx === 2
         }
     });
     // console.log(monthsInfo);
-    let monthYearTemplate ="";
+    let monthYearTemplate = "";
 
     monthsInfo.forEach((month, idx) => {
-        monthYearTemplate += `<div class="${month.active ? 'active-month' : 'other-month'} ${month.prev ? 'prev' : ''} ${month.next ? 'next' : ''}"><span class="month">${month.monthString}</span><span class="year">${month.year}</span></div>`
+        monthYearTemplate += `<div class="${month.active ? 'active-month' : 'other-month'} ${month.prev ? 'prev' : ''} ${month.next ? 'next' : ''}"><span class="month">${month.monthString}</span> <span class="year">${month.year}</span></div>`
     });
     // console.log(monthYearTemplate);
 
@@ -183,11 +184,11 @@ function updateTime(time) {
     calendar = new Date(time);
 }
 
-function monthTrigger(){
+function monthTrigger() {
     $prevMonth = document.querySelector('.prev');
     $nextMonth = document.querySelector('.next');
 
-    $prevMonth.addEventListener('click', function(){
+    $prevMonth.addEventListener('click', function () {
         updateTime(getTime().prevMonth);
         drawAll(calendar);
         monthTrigger() // 해당 함수를 재 선언 하는 이유는 다음과 같다.
@@ -195,28 +196,22 @@ function monthTrigger(){
         // console.log('prev');
     })
 
-    $nextMonth.addEventListener('click', e=> {
+    $nextMonth.addEventListener('click', e => {
         updateTime(getTime().nextMonth);
         drawAll(calendar);
         monthTrigger()
         // console.log('next')
     });
-
-    // console.log('monthTrigger');
 }
-// document.querySelector('.prev').addEventListener('click', () => {
-//     updateTime(getTime().prevMonth);
-//     drawAll(calendar);
-//     console.log('prev');
-// })
 
 // ========================================================
 // 5. 날짜 선택 시 최신화
-function dateTrigger(){
+function dateTrigger() {
     $dates = document.querySelector('.calendar-dates');
-    
+
     $dates.addEventListener('click', e => {
         let element = e.path[1];
+        console.log(e);
         // getStrDateByEl 에서 $dates 즉, 날짜들이 출력되는 영역에 날짜값이 아닌 element들이 있는데 해당 element는 date값이 없는 불필요 영역으로 값을 불러올 필요가 없다. 이때문에 return false를 통한 실행 중지가 있다.
         getStrDateByEl(element);
         updateTime(strDate);
@@ -226,7 +221,7 @@ function dateTrigger(){
         monthTrigger();
         completeToDo(calendar);
     })
-    
+
     // console.log('dateTrigger');
 }
 // ========================================================
@@ -240,24 +235,24 @@ function getStrDateByEl(El) {
 
 // ========================================================
 //6. todolist
-function todoDateKey (time) {
-    return `${time.getMonth()+1}-${time.getDate()}-${time.getFullYear()}` // 달/일/연도
+function todoDateKey(time) {
+    return `${time.getMonth()+1}-${time.getDate()}-${time.getFullYear()}` // 달-일-연도
 }
 // console.log(todoDateKey(calendar))
-const incompleteToDosStorageName='incomplete-todos'
+const incompleteToDosStorageName = 'incomplete-todos'
 let TODOLIST = JSON.parse(localStorage.getItem(incompleteToDosStorageName)) || {};
 
 function addToDoTrigger() {
     const $addToDoBtn = document.querySelector('.insert-todo__field__btn');
     const $todoField = document.querySelector('.insert-todo__field');
-    
+
     $addToDoBtn.addEventListener('click', e => {
         let $selectedDates = document.querySelector('.selected-date');
         // console.log($selectedDates);   
-        
+
         let toDoValue = $todoField.value;
         // console.log(toDoValue);
-        
+
         getStrDateByEl($selectedDates);
         let toDoKey = todoDateKey(new Date(strDate))
         // console.log(toDoKey);
@@ -265,10 +260,10 @@ function addToDoTrigger() {
         // let $todoList = document.querySelector(`.toDoList-${+new Date(strDate)}`);
         // console.log($todoList);
 
-        if(!TODOLIST[toDoKey]) TODOLIST[toDoKey] = [];
+        if (!TODOLIST[toDoKey]) TODOLIST[toDoKey] = [];
 
         // console.log(TODOLIST)
-        if(toDoValue) TODOLIST[toDoKey].push(toDoValue);
+        if (toDoValue) TODOLIST[toDoKey].push(toDoValue);
 
         localStorage.setItem(incompleteToDosStorageName, JSON.stringify(TODOLIST));
         $todoField.value = '';
@@ -276,10 +271,10 @@ function addToDoTrigger() {
         drawAll(calendar);
         monthTrigger();
     });
-    
+
 }
 
-function drawToDos () {
+function drawToDos() {
     const $completeList = document.querySelector('.complete__list');
     const $incompleteList = document.querySelector('.incomplete__list');
 
@@ -292,7 +287,7 @@ function drawToDos () {
     let todayToDoTemplate = '';
     let todayCompleteTemplate = '';
     todayToDoList.forEach(todo => {
-        todayToDoTemplate += `<li><span class="material-icons completeBtn">done</span>${todo}</li>`;
+        todayToDoTemplate += `<li><span class="material-icons completeBtn">done</span>${todo}<span class="material-icons cancelBtn">clear</span></li>`;
     });
     todayCompleteList.forEach(completeTodo => {
         todayCompleteTemplate += `<li>${completeTodo}</li>`;
@@ -305,16 +300,16 @@ function drawToDos () {
 
 // ========================================================
 //6. 완료 버튼 누를시에 complete 리스트에 출력하고 storage에 추가와 complete 리스트에 추가
-const completeToDosStorageName='complete-todos'
+const completeToDosStorageName = 'complete-todos'
 let COMPLETELIST = JSON.parse(localStorage.getItem(completeToDosStorageName)) || {};
 
-function completeToDo () {
+function completeToDo() {
     const $completeBtn = document.querySelectorAll('.completeBtn');
     // console.log(todoDateKey(calendar));
     // console.log($completeBtn);
     // console.log('실행!')
 
-    $completeBtn.forEach((btn,idx) => {
+    $completeBtn.forEach((btn, idx) => {
         btn.addEventListener('click', e => {
             // console.log(idx)
             // console.log('good-work', idx);
@@ -323,19 +318,44 @@ function completeToDo () {
             // console.log(TODOLIST[todoDateKey(calendar)][idx])
             let completeTodo = TODOLIST[todoDateKey(calendar)][idx];
 
-            let changeToDolist = todoList.filter(todo => 
+            let changeToDolist = todoList.filter(todo =>
                 todo !== TODOLIST[todoDateKey(calendar)][idx]
             )
             // console.log(changeToDolist);
-            
-            TODOLIST[todoDateKey(calendar)]=changeToDolist;
+
+            TODOLIST[todoDateKey(calendar)] = changeToDolist;
             localStorage.setItem(incompleteToDosStorageName, JSON.stringify(TODOLIST));
-            
-            if(!COMPLETELIST[todoDateKey(calendar)]) COMPLETELIST[todoDateKey(calendar)] = [];
+
+            if (!COMPLETELIST[todoDateKey(calendar)]) COMPLETELIST[todoDateKey(calendar)] = [];
             COMPLETELIST[todoDateKey(calendar)].push(completeTodo);
             // console.log(COMPLETELIST);
             localStorage.setItem(completeToDosStorageName, JSON.stringify(COMPLETELIST));
-            
+
+            drawAll(calendar);
+            monthTrigger();
+        })
+    })
+}
+
+//7. todo 취소 버튼
+function cancelToDo() {
+    const $cancelBtn = document.querySelectorAll('.cancelBtn');
+
+    $cancelBtn.forEach((btn, idx) => {
+        btn.addEventListener('click', e => {
+            // console.log(idx)
+            // console.log(TODOLIST[todoDateKey(calendar)])
+            let todoList = TODOLIST[todoDateKey(calendar)]
+            // console.log(TODOLIST[todoDateKey(calendar)][idx])
+
+            let changeToDolist = todoList.filter(todo =>
+                todo !== TODOLIST[todoDateKey(calendar)][idx]
+            )
+            // console.log(changeToDolist);
+
+            TODOLIST[todoDateKey(calendar)] = changeToDolist;
+            localStorage.setItem(incompleteToDosStorageName, JSON.stringify(TODOLIST));
+
             drawAll(calendar);
             monthTrigger();
         })
@@ -351,6 +371,7 @@ function drawAll(time) {
     drawDates(time)
     drawToDos();
     completeToDo();
+    cancelToDo();
 };
 
 function init() {
